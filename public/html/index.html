@@ -13,7 +13,7 @@
 			$(document).ready(function() {
 				var socket = io.connect();
 				socket.on('message', function(data) {
-					$('#messages').append('<div class="message">' + data + '</div>')
+					$('#messages').append($('div').text(data));
 				});
 
 				$('#sendMessage').click(function() {
