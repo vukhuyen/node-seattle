@@ -2,9 +2,15 @@
 	<head>
 		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<style>
+			#cursors div {
+				position: absolute;
+			} 
+		</style>
 	</head>
 	<body>
 		<h1>Socket.IO Example</h1>
+		<div id="cursors"></div>
 		<div id="messages"></div>
 		<input id="content" type="text" />
 		<input id="sendMessage" type="submit" text="send" />
@@ -16,11 +22,25 @@
 					$('#messages').append($('<div/>').text(data));
 				});
 
+				socket.on('mouseposition', function(mouse) {
+					var cursor = $('#' + mouse.id);
+					if(cursor.length == 0) {
+						$('#cursors').append('<div id="' + mouse.id + '">O</div>');
+						cursor = $('#' + mouse.id);
+					}
+					cursor.css('top', mouse.y);
+					cursor.css('left', mouse.x);
+				});
+
 				$('#sendMessage').click(function() {
 					if($('#content').val()) {
 						socket.emit('message', $('#content').val());
 						$('#content').val('');
 					}
+				});
+
+				$(document).mousemove(function(e) {
+					socket.emit('mouseposition', {x: e.pageX, y: e.pageY});
 				});
 			});
 		</script>

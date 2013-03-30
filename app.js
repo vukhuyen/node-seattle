@@ -38,4 +38,8 @@ io.sockets.on('connection', function (socket) {
     io.sockets.emit('message', message);
   });
 
+  socket.on('mouseposition', function(mouse) {
+    mouse.id = socket.id;
+    socket.emit('mouseposition', mouse);
+  });
 });
