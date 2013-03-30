@@ -1,4 +1,4 @@
-var http = require('http')
+var http = require('http'),
 	fs = require('fs');
 
 var fileCache = {};
@@ -26,4 +26,6 @@ function handleRequest(req, res) {
 	}
 }
 
-http.createServer(handleRequest).listen(process.env.PORT || 3000);
+http.createServer(function(req, res) {
+	res.end('please work');
+}).listen(process.env.PORT || 3000);
