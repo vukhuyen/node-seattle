@@ -40,6 +40,6 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('mouseposition', function(mouse) {
     mouse.id = socket.id;
-    socket.emit('mouseposition', mouse);
+    io.sockets.emit('mouseposition', mouse);
   });
 });
