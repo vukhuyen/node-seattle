@@ -1,29 +1,41 @@
-var http = require('http'),
-	fs = require('fs');
+var express = require('express'),
+    http = require('http'),
+    path = require('path'),
+    socketio = require('socket.io');
 
-var fileCache = {};
+var app = express();
 
-function handleRequest(req, res) {
-	file = __dirname + req.url;
-	if(fileCache[file]) {
-		console.log('serving cached file');
-		res.end(fileCache[file])
-	} else {
-		fs.readFile(file, function(err, data) {
-			if(err) {
-				res.end('file not found', 404)
-			}
-			console.log('serving new file');
-			fs.watchFile(file, function(prev, curr) {
-				if(prev.mtime != curr.mtime) {
-					console.log('refreshing cache', file);
-					delete fileCache[file];
-				}
-			});
-			fileCache[file] = data;
-			res.end(data);
-		});
-	}
-}
+app.configure(function(){
+  app.set('port', process.env.PORT || 3000);
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'jade');
+  app.use(express.favicon());
+  app.use(express.logger('dev'));
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(app.router);
+  app.use(express.static(path.join(__dirname, 'public')));
+});
 
-http.createServer(handleRequest).listen(process.env.PORT || 3000);
+app.get('/', function(req, res) {
+  res.sendfile('./public/html/index.html');
+});
+
+app.configure('development', function(){
+  app.use(express.errorHandler());
+});
+
+var server = http.createServer(app).listen(app.get('port'), function(){
+  console.log("Express server listening on port " + app.get('port'));
+});
+
+var io = socketio.listen(server);
+
+io.sockets.on('connection', function (socket) {
+  console.log('client connected');
+
+  socket.on('message', function(message) {
+    io.sockets.emit('message', message);
+  });
+
+});

@@ -1,8 +1,12 @@
 {
-  "name": "node-seattle",
-  "description": "",
-  "author": "A confused individual <iam@confused.com>",
-  "dependencies": {
+  "name": "application-name",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app"
   },
-  "engine": "node 0.8.x"
+  "dependencies": {
+    "express": "3.1.0",
+    "jade": "*"
+  }
 }
